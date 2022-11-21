@@ -1,26 +1,44 @@
+// The above code will include the MySQL, Express, Express-session, and Path modules, and associate them with the variables we have declared.
 import mysql from "mysql";
 import express from "express";
 import session from "express-session";
 import path from "path";
+import "./config"
 
+// We can now connect to our database with the following code:
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "12345678",
   database: "nodelogin",
 });
-
+console.log("we are connected to mysql server");
+// Express is what we'll use for our web application, which includes packages that are essential for server-side web development, such as sessions and handling HTTP requests.
+// Add the following code to initialize express 
 const app = express();
+
+//After, we need to associate the modules we'll be using with Express:
 app.use(
   session({
+    // To secure the session cookie
     secret: "secret",
+    // For every request , it rest the session cookie
     resave: true,
+    // the saveUninitialized : false will not create a new session for the user if you don't add anything to the session like 
     saveUninitialized: true,
   })
 );
+// The json and urlencoded methods will extract the form data from our login.html file.
 app.use(express.json());
+// express.urlencoded() for POST and PUT requests, because in both these requests you are sending data (in the form of some data object) to the server and you are asking the server to accept or store that data (object), which is enclosed in the body (i.e. req.body) of that (POST or PUT) Request
 app.use(express.urlencoded({ extended: true }));
+// The __dirname in a node script returns the path of the folder where the current JavaScript file resides. __filename and __dirname are used to get the filename and directory name of the currently executing file.
 app.use(express.static(path.join(__dirname, "static")));
+
+///// TIP //////
+// Secure Sockets Layer
+// SSL stands for Secure Sockets Layer and, in short,
+// it's the standard technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems.
 
 app.get("/", function (request:any, response:any) {
   // Render login template
@@ -64,10 +82,13 @@ app.get('/home', function(request:any, response:any) {
 	if (request.session.loggedin) {
 		// Output username
 		response.send('Welcome back, ' + request.session.username + '!');
+    
 	} else {
 		// Not logged in
 		response.send('Please login to view this page!');
 	}
 	response.end();
 });
-app.listen(3000);
+app.listen(3000,() => {
+  console.log("Listening on http://localhost:3000")
+});

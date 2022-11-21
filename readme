@@ -1,0 +1,7 @@
+Authorization & Authentication
+________
+
+The first word , * authentication * || AuthN Refers to the ability of a system to identify - for a specific request - who is the user who initiated this request. Or in simple words who is a user who is currently trying to do something system. And when I say "who" I mean the corresponding row from a user table or a user ID saved there. All the techniques of two-step identification, identification through SMS, identification with a fingerprint or keys - they all enter the world of authentication. The authentication is also relatively easy to outsource to an external service or system, for example when you try to connect to some kind of Google system you will first have to identify yourself with accounts.google.com to verify "who" you are.
+-
+The second word, * Authorization * || or AuthZ for short, refers to what the user is allowed or not allowed to do. In other words, given that a user is now sitting in front of me and I have all the information about him from the user table - is he allowed or not allowed to perform the action he wants to do
+Authorization rules can be implicit in the code or explicit. Implicit rules are simply the result of the code we write. For example, code of this type includes implicit Authorization rules.
