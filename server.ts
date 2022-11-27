@@ -13,10 +13,10 @@ const connection = mysql.createConnection({
   database: "nodelogin",
 });
 console.log("we are connected to mysql server");
+
 // Express is what we'll use for our web application, which includes packages that are essential for server-side web development, such as sessions and handling HTTP requests.
 // Add the following code to initialize express 
 const app = express();
-
 //After, we need to associate the modules we'll be using with Express:
 app.use(
   session({
@@ -40,11 +40,11 @@ app.use(express.static(path.join(__dirname, "static")));
 // SSL stands for Secure Sockets Layer and, in short,
 // it's the standard technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems.
 
-app.get("/", function (request:any, response:any) {
+app.get("/", function (request: any, response: any) {
   // Render login template
   response.sendFile(path.join(__dirname + "/login.html"));
   // http://localhost:3000/auth
-  app.post("/auth", function (request:any, response:any) {
+  app.post("/auth", function (request: any, response: any) {
     // Capture the input fields
     let username = request.body.username;
     let password = request.body.password;
@@ -54,7 +54,7 @@ app.get("/", function (request:any, response:any) {
       connection.query(
         "SELECT * FROM accounts WHERE username = ? AND password = ?",
         [username, password],
-        function (error:any, results:any, fields:any) {
+        function (error: any, results: any, fields: any) {
           // If there is an issue with the query, output the error
           if (error) throw error;
           // If the account exists
@@ -63,32 +63,32 @@ app.get("/", function (request:any, response:any) {
             request.session.loggedin = true;
             request.session.username = username;
             // Redirect to home page
-            response.redirect("/home");
+            response.sendFile(__dirname + "/home.html");
           } else {
-            response.send("Incorrect Username and/or Password!");
-          }
-          response.end();
+            response.send('<h1 style="text-align:center; background-color:lightblue" >Sorry, We cant find you</h1>');          }
         }
       );
     } else {
-      response.send("Please enter Username and Password!");
-      response.end();
     }
   });
 });
 // http://localhost:3000/home
-app.get('/home', function(request:any, response:any) {
-	// If the user is loggedin
-	if (request.session.loggedin) {
-		// Output username
-		response.send('Welcome back, ' + request.session.username + '!');
-    
-	} else {
-		// Not logged in
-		response.send('Please login to view this page!');
-	}
-	response.end();
-});
-app.listen(3000,() => {
+app.get('/home', function (request: any, response: any) {
+  // If the user is loggedin
+  if (request.session.loggedin) {
+    // Output username
+    response.sendFile(__dirname + "/home.html");
+
+  } else {
+    // Not logged in
+    response.send('<h1 style="text-align:center">login to view this page</h1>');
+  }
+
+}
+);
+app.get('*', (req, res) => {
+  res.send('<h1 style = "text-align:center; font-size:80px">404</h1>')
+})
+app.listen(3000, () => {
   console.log("Listening on http://localhost:3000")
 });
