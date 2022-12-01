@@ -5,12 +5,18 @@
 }
 body {
     background-color: #ffffff;
+    background-image: url("montylov-Nlty8fARDwg-unsplash.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; 
+  
 }
 .login {
     width: 400px;
     background-color: #ffffff;
     box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
     margin: 100px auto;
+    border-radius: 17px;
 }
 .login h1 {
     text-align: center;
@@ -24,6 +30,8 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     padding-top: 20px;
+    border-radius: 17px;
+
 }
 .login form label {
     display: flex;
@@ -52,8 +60,13 @@ body {
     font-weight: bold;
     color: #bfb9b9;
     transition: background-color 0.2s;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+
 }
 .login form input[type="submit"]:hover {
   background-color: #000000;
     transition: background-color 0.1s;
+
 }
+

@@ -12,6 +12,9 @@ const connection = mysql.createConnection({
   password: "12345678",
   database: "nodelogin",
 });
+
+
+
 console.log("we are connected to mysql server");
 
 // Express is what we'll use for our web application, which includes packages that are essential for server-side web development, such as sessions and handling HTTP requests.
@@ -69,9 +72,20 @@ app.get("/", function (request: any, response: any) {
         }
       );
     } else {
+        
     }
   });
 });
+
+// Logout
+// Destroys the session to log out the user.
+app.get("/logout", function(req, res) {
+  req.session.destroy(() => {
+   res.redirect("/"); //Inside a callback… bulletproof!
+  });
+ });
+
+
 // http://localhost:3000/home
 app.get('/home', function (request: any, response: any) {
   // If the user is loggedin
@@ -89,6 +103,8 @@ app.get('/home', function (request: any, response: any) {
 app.get('*', (req, res) => {
   res.send('<h1 style = "text-align:center; font-size:80px">404</h1>')
 })
+
 app.listen(3000, () => {
   console.log("Listening on http://localhost:3000")
 });
+
