@@ -3,7 +3,6 @@ import mysql from "mysql";
 import express from "express";
 import session from "express-session";
 import path from "path";
-import "./config"
 
 // We can now connect to our database with the following code:
 const connection = mysql.createConnection({
@@ -13,10 +12,7 @@ const connection = mysql.createConnection({
   database: "nodelogin",
 });
 
-
-
 console.log("we are connected to mysql server");
-
 // Express is what we'll use for our web application, which includes packages that are essential for server-side web development, such as sessions and handling HTTP requests.
 // Add the following code to initialize express 
 const app = express();
@@ -37,12 +33,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // The __dirname in a node script returns the path of the folder where the current JavaScript file resides. __filename and __dirname are used to get the filename and directory name of the currently executing file.
 app.use(express.static(path.join(__dirname, "static")));
-
 ///// TIP //////
 // Secure Sockets Layer
 // SSL stands for Secure Sockets Layer and, in short,
 // it's the standard technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems.
-
 app.get("/", function (request: any, response: any) {
   // Render login template
   response.sendFile(path.join(__dirname + "/login.html"));
@@ -68,24 +62,38 @@ app.get("/", function (request: any, response: any) {
             // Redirect to home page
             response.sendFile(__dirname + "/home.html");
           } else {
-            response.send('<h1 style="text-align:center; background-color:lightblue" >Sorry, We cant find you</h1>');          }
+            response.send("<h3 style='text-align:center'>incorrect username or password</h3>")
+          }
         }
       );
     } else {
-        
+
     }
   });
 });
-
 // Logout
 // Destroys the session to log out the user.
-app.get("/logout", function(req, res) {
+app.get("/logout", function (req, res) {
   req.session.destroy(() => {
-   res.redirect("/"); //Inside a callback… bulletproof!
+    res.redirect("/"); //Inside a callback… bulletproof!
   });
- });
-
-
+});
+// sign up and post to database.
+app.get("/sign-up", function (req, res) {
+  res.sendFile(__dirname + "/sign-up.html");
+  app.post("/register", function (req: any, res: any) {
+    let username = req.body.username;
+    let password = req.body.password;
+    let email = req.body.email;
+    if (username && password && email) {
+      connection.query(
+        "INSERT INTO `nodelogin`.`accounts` (`username`, `password`, `email`) VALUES (?,?,?)", [username, password, email]
+      )
+      // after the post to the mysql send me the login page.
+      res.sendFile(path.join(__dirname + "/login.html"));
+    }
+  });
+});
 // http://localhost:3000/home
 app.get('/home', function (request: any, response: any) {
   // If the user is loggedin
@@ -103,6 +111,7 @@ app.get('/home', function (request: any, response: any) {
 app.get('*', (req, res) => {
   res.send('<h1 style = "text-align:center; font-size:80px">404</h1>')
 })
+
 
 app.listen(3000, () => {
   console.log("Listening on http://localhost:3000")
