@@ -33,13 +33,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // The __dirname in a node script returns the path of the folder where the current JavaScript file resides. __filename and __dirname are used to get the filename and directory name of the currently executing file.
 app.use(express.static(path.join(__dirname, "static")));
-///// TIP //////
-// Secure Sockets Layer
-// SSL stands for Secure Sockets Layer and, in short,
-// it's the standard technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems.
+
 app.get("/", function (request: any, response: any) {
   // Render login template
-  response.sendFile(path.join(__dirname + "/login.html"));
+  response.sendFile(path.join(__dirname + "/front/login.html"));
   // http://localhost:3000/auth
   app.post("/auth", function (request: any, response: any) {
     // Capture the input fields
@@ -52,6 +49,7 @@ app.get("/", function (request: any, response: any) {
         "SELECT * FROM accounts WHERE username = ? AND password = ?",
         [username, password],
         function (error: any, results: any, fields: any) {
+
           // If there is an issue with the query, output the error
           if (error) throw error;
           // If the account exists
@@ -60,17 +58,22 @@ app.get("/", function (request: any, response: any) {
             request.session.loggedin = true;
             request.session.username = username;
             // Redirect to home page
-            response.sendFile(__dirname + "/home.html");
-          } else {
+            response.sendFile(__dirname + "/front/home.html");
+          }
+          else {
             response.send("<h3 style='text-align:center'>incorrect username or password</h3>")
           }
+
         }
       );
-    } else {
-
     }
   });
 });
+///// TIP //////
+// Secure Sockets Layer
+// SSL stands for Secure Sockets Layer and, in short,
+// it's the standard technology for keeping an internet connection secure and safeguarding any sensitive data that is being sent between two systems.
+
 // Logout
 // Destroys the session to log out the user.
 app.get("/logout", function (req, res) {
@@ -80,7 +83,7 @@ app.get("/logout", function (req, res) {
 });
 // sign up and post to database.
 app.get("/sign-up", function (req, res) {
-  res.sendFile(__dirname + "/sign-up.html");
+  res.sendFile(__dirname + "/front/sign-up.html");
   app.post("/register", function (req: any, res: any) {
     let username = req.body.username;
     let password = req.body.password;
@@ -90,7 +93,7 @@ app.get("/sign-up", function (req, res) {
         "INSERT INTO `nodelogin`.`accounts` (`username`, `password`, `email`) VALUES (?,?,?)", [username, password, email]
       )
       // after the post to the mysql send me the login page.
-      res.sendFile(path.join(__dirname + "/login.html"));
+      res.sendFile(path.join(__dirname + "/front/login.html"));
     }
   });
 });
@@ -99,7 +102,7 @@ app.get('/home', function (request: any, response: any) {
   // If the user is loggedin
   if (request.session.loggedin) {
     // Output username
-    response.sendFile(__dirname + "/home.html");
+    response.sendFile(__dirname + "/front/home.html");
 
   } else {
     // Not logged in
@@ -116,4 +119,8 @@ app.get('*', (req, res) => {
 app.listen(3000, () => {
   console.log("Listening on http://localhost:3000")
 });
+
+
+
+
 
